@@ -1,4 +1,12 @@
 package drawbox.common
 
-class DrawBox {
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+
+@Composable
+fun DrawBox(
+    controller: DrawController,
+    modifier: Modifier = Modifier.fillMaxSize(),
+) {
 }
