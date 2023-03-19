@@ -20,10 +20,7 @@ fun DrawBox(
         .onSizeChanged { newSize -> controller.connectToDrawBox(newSize) }
         .pointerInput(Unit) {
             detectTapGestures(
-                onTap = { offset ->
-                    controller.insertNewPath(offset)
-                    controller.updateLatestPath(offset)
-                }
+                onTap = { offset -> controller.insertNewPath(offset) }
             )
         }
         .pointerInput(Unit) {

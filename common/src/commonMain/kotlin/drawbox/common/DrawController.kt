@@ -84,6 +84,7 @@ class DrawController {
         )
         drawnPaths.add(pathWrapper)
         canceledPaths.clear()
+        invalidateBitmap()
     }
 
     /** Call this function to connect to the [DrawBox]. */
