@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import drawbox.common.model.PathWrapper
 import drawbox.common.util.createPath
 
 @Composable
@@ -19,7 +20,7 @@ fun DrawBox(
     controller: DrawController,
     modifier: Modifier = Modifier.fillMaxSize(),
 ) {
-    val path = controller.pathToDrawOnCanvas
+    val path: List<PathWrapper>? = controller.pathToDrawOnCanvas
 
     Canvas(modifier = modifier
         .onSizeChanged { newSize -> controller.connectToDrawBox(newSize) }

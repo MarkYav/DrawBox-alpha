@@ -19,29 +19,30 @@ class DrawController {
     /** A stateful list of [Path] that is drawn on the [Canvas]. */
     private val drawnPaths: SnapshotStateList<PathWrapper> = mutableStateListOf()
 
-    internal val pathToDrawOnCanvas by derivedStateOf {
+    /** A stateful list of [Path] that is drawn on the [Canvas] and is scaled for the connected bitmap. */
+    internal val pathToDrawOnCanvas: List<PathWrapper>? by derivedStateOf {
         (state as? DrawBoxConnectionState.Connected)?.let {
             drawnPaths.scale(it.size.toFloat())
         }
     }
 
     /** A stateful list of [Path] that was drawn on the [Canvas] but user retracted his action. */
-    private val canceledPaths = mutableStateListOf<PathWrapper>()
+    private val canceledPaths: SnapshotStateList<PathWrapper> = mutableStateListOf<PathWrapper>()
 
     /** An [opacity] of the stroke */
-    var opacity by mutableStateOf(1f)
+    var opacity: Float by mutableStateOf(1f)
 
     /** A [strokeWidth] of the stroke */
-    var strokeWidth by mutableStateOf(10f)
+    var strokeWidth: Float by mutableStateOf(10f)
 
     /** A [color] of the stroke */
-    var color by mutableStateOf(Color.Red)
+    var color: Color by mutableStateOf(Color.Red)
 
     /** Indicate how many redos it is possible to do. */
-    val undoCount by derivedStateOf { drawnPaths.size }
+    val undoCount: Int by derivedStateOf { drawnPaths.size }
 
     /** Indicate how many undos it is possible to do. */
-    val redoCount by derivedStateOf { canceledPaths.size }
+    val redoCount: Int by derivedStateOf { canceledPaths.size }
 
     /** Executes undo the drawn path if possible. */
     fun undo() {
