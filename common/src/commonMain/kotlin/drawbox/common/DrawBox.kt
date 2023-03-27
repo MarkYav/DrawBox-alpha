@@ -36,7 +36,7 @@ fun DrawBox(
         }
         .clipToBounds()
     ) {
-        path.forEach { pw ->
+        path?.forEach { pw ->
             drawPath(
                 createPath(pw.points),
                 color = pw.strokeColor,

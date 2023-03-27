@@ -1,9 +1,6 @@
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,7 +24,8 @@ fun main() = application {
             DrawBox(
                 controller = controller,
                 modifier = Modifier
-                    .size(500.dp)
+                    .fillMaxHeight()
+                    .aspectRatio(1f)
                     .padding(100.dp)
                     .border(width = 1.dp, color = Color.Blue),
             )

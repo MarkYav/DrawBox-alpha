@@ -8,8 +8,7 @@ import androidx.compose.ui.unit.IntSize
 import drawbox.common.model.PathWrapper
 import drawbox.common.util.createPath
 import drawbox.common.util.pop
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 
 /**
  * DrawController interacts with [DrawBox] and it allows you to control the canvas and all the components with it.
@@ -20,7 +19,11 @@ class DrawController {
     /** A stateful list of [Path] that is drawn on the [Canvas]. */
     private val drawnPaths: SnapshotStateList<PathWrapper> = mutableStateListOf()
 
-    internal val pathToDrawOnCanvas by derivedStateOf { drawnPaths.scale(300f) }
+    internal val pathToDrawOnCanvas by derivedStateOf {
+        (state as? DrawBoxConnectionState.Connected)?.let {
+            drawnPaths.scale(it.size.toFloat())
+        }
+    }
 
     /** A stateful list of [Path] that was drawn on the [Canvas] but user retracted his action. */
     private val canceledPaths = mutableStateListOf<PathWrapper>()
