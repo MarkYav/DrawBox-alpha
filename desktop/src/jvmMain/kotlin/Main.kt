@@ -20,7 +20,8 @@ fun main() = application {
         val controller = remember { DrawController() }
         val bitmap by controller.getBitmapFlow(250).collectAsState(ImageBitmap(250, 250, ImageBitmapConfig.Argb8888))
 
-        controller.background = DrawController.DrawBoxBackground.ColourBackground(color = Color.Blue, alpha = 0.25f)
+        controller.background = DrawController.DrawBoxBackground.ColourBackground(color = Color.Blue, alpha = 0.15f)
+        controller.opacity = 0.5f
 
         Row {
             DrawBox(

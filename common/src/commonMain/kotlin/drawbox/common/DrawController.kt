@@ -38,6 +38,7 @@ class DrawController {
     /** A [color] of the stroke */
     var color: Color by mutableStateOf(Color.Red)
 
+    /** A [background] of the background of DrawBox */
     var background: DrawBoxBackground by mutableStateOf(DrawBoxBackground.NoBackground)
 
     /** Indicate how many redos it is possible to do. */
