@@ -10,6 +10,16 @@ This is the first multiplatform drawing library!
 - Reset option
 - Easy Implementations
 
+**Next releases:**
+- Adding background (color or background image)
+- Transparency of the drawing (to see the background image)
+
+**Planned:**
+- Different subscriptions (dynamic update/after each drawing)
+- Optimizing rendering (convert drawn PATHes)
+- Erase tool
+- Different image rations
+
 ## Usage
 
 ```kotlin

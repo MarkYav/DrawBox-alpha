@@ -6,15 +6,21 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import drawbox.common.model.PathWrapper
+import drawbox.common.util.createPath
 
 @Composable
 fun DrawBox(
     controller: DrawController,
     modifier: Modifier = Modifier.fillMaxSize(),
 ) {
-    val bitmap by remember { controller.drawnBitmapState }
+    val path: List<PathWrapper>? = controller.pathToDrawOnCanvas
 
     Canvas(modifier = modifier
         .onSizeChanged { newSize -> controller.connectToDrawBox(newSize) }
@@ -29,9 +35,19 @@ fun DrawBox(
                 onDrag = { change, _ -> controller.updateLatestPath(change.position) }
             )
         }
+        .clipToBounds()
     ) {
-        bitmap?.let { bitmap ->
-            drawImage(bitmap)
+        path?.forEach { pw ->
+            drawPath(
+                createPath(pw.points),
+                color = pw.strokeColor,
+                alpha = pw.alpha,
+                style = Stroke(
+                    width = pw.strokeWidth,
+                    cap = StrokeCap.Round,
+                    join = StrokeJoin.Round
+                )
+            )
         }
     }
 }
