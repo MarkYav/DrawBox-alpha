@@ -38,6 +38,8 @@ class DrawController {
     /** A [color] of the stroke */
     var color: Color by mutableStateOf(Color.Red)
 
+    var background: DrawBoxBackground by mutableStateOf(DrawBoxBackground.NoBackground)
+
     /** Indicate how many redos it is possible to do. */
     val undoCount: Int by derivedStateOf { drawnPaths.size }
 
@@ -130,5 +132,11 @@ class DrawController {
     sealed interface DrawBoxConnectionState {
         object Disconnected : DrawBoxConnectionState
         data class Connected(val size: Int) : DrawBoxConnectionState // it is square
+    }
+
+    sealed interface DrawBoxBackground {
+        object NoBackground : DrawBoxBackground
+        data class ColourBackground(val color: Color, val alpha: Float = 1f) : DrawBoxBackground
+        data class ImageBackground(val bitmap: ImageBitmap, val alpha: Float = 1f) : DrawBoxBackground
     }
 }

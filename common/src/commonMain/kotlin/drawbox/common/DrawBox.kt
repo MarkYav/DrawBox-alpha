@@ -21,6 +21,7 @@ fun DrawBox(
     modifier: Modifier = Modifier.fillMaxSize(),
 ) {
     val path: List<PathWrapper>? = controller.pathToDrawOnCanvas
+    val background: DrawController.DrawBoxBackground = controller.background
 
     Canvas(modifier = modifier
         .onSizeChanged { newSize -> controller.connectToDrawBox(newSize) }
@@ -37,6 +38,11 @@ fun DrawBox(
         }
         .clipToBounds()
     ) {
+        when (background) {
+            is DrawController.DrawBoxBackground.ColourBackground -> drawRect(color = background.color, alpha = background.alpha)
+            is DrawController.DrawBoxBackground.ImageBackground -> drawImage(image = background.bitmap, alpha = background.alpha)
+            is DrawController.DrawBoxBackground.NoBackground -> { }
+        }
         path?.forEach { pw ->
             drawPath(
                 createPath(pw.points),
