@@ -124,6 +124,9 @@ class DrawController {
                         color = pw.strokeColor
                         alpha = pw.alpha
                         style = PaintingStyle.Stroke
+                        strokeCap = StrokeCap.Round
+                        strokeJoin = StrokeJoin.Round
+                        strokeWidth = pw.strokeWidth
                     }
                 )
             }
