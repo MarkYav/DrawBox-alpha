@@ -83,7 +83,7 @@ class DrawController {
                 points = mutableStateListOf(newPoint.div(it.size.toFloat())),
                 strokeColor = color,
                 alpha = opacity,
-                strokeWidth = strokeWidth,
+                strokeWidth = strokeWidth.div(it.size.toFloat()),
             )
             drawnPaths.add(pathWrapper)
             canceledPaths.clear()
@@ -107,7 +107,8 @@ class DrawController {
         return this.map { pw ->
             val t = pw.points.map { it.times(size) }
             pw.copy(
-                points = SnapshotStateList<Offset>().also { it.addAll(t) }
+                points = SnapshotStateList<Offset>().also { it.addAll(t) },
+                strokeWidth = pw.strokeWidth * size
             )
         }
     }
