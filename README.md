@@ -5,20 +5,20 @@ This is the first multiplatform drawing library!
 ## Features
 
 - Cross-platform!
-- Customisable stoke size and color
+- Customisable stoke size, color and opacity
 - Inbuilt Undo and Redo options
 - Reset option
+- Background with color/image
+- Custom opacity of drawing/background
 - Easy Implementations
 
 **Next releases:**
-- Adding background (color or background image)
-- Transparency of the drawing (to see the background image)
-
-**Planned:**
 - Different subscriptions (dynamic update/after each drawing)
 - Optimizing rendering (convert drawn PATHes)
-- Erase tool
+
+**Planned:**
 - Different image rations
+- Migrate from Compose dependencies in DrawController
 
 ## Usage
 
