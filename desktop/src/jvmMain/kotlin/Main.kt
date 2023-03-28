@@ -12,16 +12,17 @@ import androidx.compose.ui.graphics.ImageBitmapConfig
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import drawbox.common.DrawBox
-import drawbox.common.DrawController
+import drawbox.common.box.DrawBox
+import drawbox.common.controller.DrawBoxBackground
+import drawbox.common.controller.DrawController
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
         val controller = remember { DrawController() }
         val bitmap by controller.getBitmapFlow(250).collectAsState(ImageBitmap(250, 250, ImageBitmapConfig.Argb8888))
 
-        controller.background = DrawController.DrawBoxBackground.ColourBackground(color = Color.Blue, alpha = 0.15f)
-        controller.opacity = 0.5f
+        controller.background = DrawBoxBackground.ColourBackground(color = Color.Blue, alpha = 0.15f)
+        controller.canvasOpacity = 0.5f
 
         Row {
             DrawBox(

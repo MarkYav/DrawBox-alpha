@@ -1,4 +1,4 @@
-package drawbox.common
+package drawbox.common.controller
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -28,6 +28,9 @@ class DrawController {
 
     /** A stateful list of [Path] that was drawn on the [Canvas] but user retracted his action. */
     private val canceledPaths: SnapshotStateList<PathWrapper> = mutableStateListOf<PathWrapper>()
+
+    /** An [canvasOpacity] of the [Canvas] in the [DrawBox] */
+    var canvasOpacity: Float by mutableStateOf(1f)
 
     /** An [opacity] of the stroke */
     var opacity: Float by mutableStateOf(1f)
@@ -76,9 +79,7 @@ class DrawController {
 
     /** When dragging call this function to update the last path. */
     internal fun insertNewPath(newPoint: Offset) {
-        println("insertNewPath: $newPoint")
         (state as? DrawBoxConnectionState.Connected)?.let {
-            println("insertNewPath: norm: ${newPoint.div(it.size.toFloat())}")
             val pathWrapper = PathWrapper(
                 points = mutableStateListOf(newPoint.div(it.size.toFloat())),
                 strokeColor = color,
@@ -99,7 +100,6 @@ class DrawController {
             //state is DrawBoxConnectionState.Disconnected
         ) {
             state = DrawBoxConnectionState.Connected(size = size.width)
-            println("connectToDrawBox: size = $size")
         }
     }
 
@@ -132,16 +132,5 @@ class DrawController {
             }
             emit(bitmap)
         }
-    }
-
-    sealed interface DrawBoxConnectionState {
-        object Disconnected : DrawBoxConnectionState
-        data class Connected(val size: Int) : DrawBoxConnectionState // it is square
-    }
-
-    sealed interface DrawBoxBackground {
-        object NoBackground : DrawBoxBackground
-        data class ColourBackground(val color: Color, val alpha: Float = 1f) : DrawBoxBackground
-        data class ImageBackground(val bitmap: ImageBitmap, val alpha: Float = 1f) : DrawBoxBackground
     }
 }
