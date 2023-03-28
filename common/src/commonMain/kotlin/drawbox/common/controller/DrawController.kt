@@ -1,4 +1,4 @@
-package drawbox.common
+package drawbox.common.controller
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -29,6 +29,9 @@ class DrawController {
     /** A stateful list of [Path] that was drawn on the [Canvas] but user retracted his action. */
     private val canceledPaths: SnapshotStateList<PathWrapper> = mutableStateListOf<PathWrapper>()
 
+    /** An [canvasOpacity] of the [Canvas] in the [DrawBox] */
+    var canvasOpacity: Float by mutableStateOf(1f)
+
     /** An [opacity] of the stroke */
     var opacity: Float by mutableStateOf(1f)
 
@@ -37,6 +40,9 @@ class DrawController {
 
     /** A [color] of the stroke */
     var color: Color by mutableStateOf(Color.Red)
+
+    /** A [background] of the background of DrawBox */
+    var background: DrawBoxBackground by mutableStateOf(DrawBoxBackground.NoBackground)
 
     /** Indicate how many redos it is possible to do. */
     val undoCount: Int by derivedStateOf { drawnPaths.size }
@@ -73,14 +79,12 @@ class DrawController {
 
     /** When dragging call this function to update the last path. */
     internal fun insertNewPath(newPoint: Offset) {
-        println("insertNewPath: $newPoint")
         (state as? DrawBoxConnectionState.Connected)?.let {
-            println("insertNewPath: norm: ${newPoint.div(it.size.toFloat())}")
             val pathWrapper = PathWrapper(
                 points = mutableStateListOf(newPoint.div(it.size.toFloat())),
                 strokeColor = color,
                 alpha = opacity,
-                strokeWidth = strokeWidth,
+                strokeWidth = strokeWidth.div(it.size.toFloat()),
             )
             drawnPaths.add(pathWrapper)
             canceledPaths.clear()
@@ -96,7 +100,6 @@ class DrawController {
             //state is DrawBoxConnectionState.Disconnected
         ) {
             state = DrawBoxConnectionState.Connected(size = size.width)
-            println("connectToDrawBox: size = $size")
         }
     }
 
@@ -104,7 +107,8 @@ class DrawController {
         return this.map { pw ->
             val t = pw.points.map { it.times(size) }
             pw.copy(
-                points = SnapshotStateList<Offset>().also { it.addAll(t) }
+                points = SnapshotStateList<Offset>().also { it.addAll(t) },
+                strokeWidth = pw.strokeWidth * size
             )
         }
     }
@@ -120,15 +124,13 @@ class DrawController {
                         color = pw.strokeColor
                         alpha = pw.alpha
                         style = PaintingStyle.Stroke
+                        strokeCap = StrokeCap.Round
+                        strokeJoin = StrokeJoin.Round
+                        strokeWidth = pw.strokeWidth
                     }
                 )
             }
             emit(bitmap)
         }
-    }
-
-    sealed interface DrawBoxConnectionState {
-        object Disconnected : DrawBoxConnectionState
-        data class Connected(val size: Int) : DrawBoxConnectionState // it is square
     }
 }

@@ -1,43 +1,46 @@
-package drawbox.common
+package drawbox.common.box
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.unit.IntSize
 import drawbox.common.model.PathWrapper
 import drawbox.common.util.createPath
 
 @Composable
-fun DrawBox(
-    controller: DrawController,
-    modifier: Modifier = Modifier.fillMaxSize(),
+fun DrawBoxCanvas(
+    path: List<PathWrapper>,
+    alpha: Float,
+    onSizeChanged: (IntSize) -> Unit,
+    onTap: (Offset) -> Unit,
+    onDragStart: (Offset) -> Unit = { },
+    onDrag: (Offset) -> Unit,
+    modifier: Modifier,
 ) {
-    val path: List<PathWrapper>? = controller.pathToDrawOnCanvas
+    val onDragMapper: (change: PointerInputChange, dragAmount: Offset) -> Unit = remember {
+        { change, _ -> onDrag(change.position) }
+    }
 
     Canvas(modifier = modifier
-        .onSizeChanged { newSize -> controller.connectToDrawBox(newSize) }
-        .pointerInput(Unit) {
-            detectTapGestures(
-                onTap = { offset -> controller.insertNewPath(offset) }
-            )
-        }
-        .pointerInput(Unit) {
-            detectDragGestures(
-                onDragStart = { offset -> controller.insertNewPath(offset) },
-                onDrag = { change, _ -> controller.updateLatestPath(change.position) }
-            )
-        }
+        .onSizeChanged(onSizeChanged)
+        .pointerInput(Unit) { detectTapGestures(onTap = onTap) }
+        .pointerInput(Unit) { detectDragGestures(onDragStart = onDragStart, onDrag = onDragMapper) }
         .clipToBounds()
+        .alpha(alpha)
     ) {
-        path?.forEach { pw ->
+        path.forEach { pw ->
             drawPath(
                 createPath(pw.points),
                 color = pw.strokeColor,
