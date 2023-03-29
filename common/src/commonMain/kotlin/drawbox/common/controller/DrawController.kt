@@ -19,6 +19,8 @@ class DrawController {
     /** A stateful list of [Path] that is drawn on the [Canvas]. */
     private val drawnPaths: SnapshotStateList<PathWrapper> = mutableStateListOf()
 
+    private val completelyDrawnPaths: SnapshotStateList<PathWrapper> = mutableStateListOf()
+
     /** A stateful list of [Path] that is drawn on the [Canvas] and is scaled for the connected bitmap. */
     internal val pathToDrawOnCanvas: List<PathWrapper>? by derivedStateOf {
         (state as? DrawBoxConnectionState.Connected)?.let {
@@ -27,7 +29,7 @@ class DrawController {
     }
 
     /** A stateful list of [Path] that was drawn on the [Canvas] but user retracted his action. */
-    private val canceledPaths: SnapshotStateList<PathWrapper> = mutableStateListOf<PathWrapper>()
+    private val canceledPaths: SnapshotStateList<PathWrapper> = mutableStateListOf()
 
     /** An [canvasOpacity] of the [Canvas] in the [DrawBox] */
     var canvasOpacity: Float by mutableStateOf(1f)
@@ -91,6 +93,11 @@ class DrawController {
         }
     }
 
+    internal fun finalizePath() {
+        completelyDrawnPaths.clear()
+        completelyDrawnPaths.addAll(drawnPaths)
+    }
+
     /** Call this function to connect to the [DrawBox]. */
     internal fun connectToDrawBox(size: IntSize) {
         if (
@@ -113,11 +120,15 @@ class DrawController {
         }
     }
 
-    fun getBitmapFlow(size: Int): Flow<ImageBitmap> {
+    fun getBitmapFlow(size: Int, subscription: DrawBoxSubscription): Flow<ImageBitmap> {
         return flow {
             val bitmap = ImageBitmap(size, size, ImageBitmapConfig.Argb8888)
             val canvas = Canvas(bitmap)
-            drawnPaths.scale(size.toFloat()).forEach { pw ->
+            val path = when (subscription) {
+                is DrawBoxSubscription.DynamicUpdate -> drawnPaths
+                is DrawBoxSubscription.FinishDrawingUpdate -> completelyDrawnPaths
+            }
+            path.scale(size.toFloat()).forEach { pw ->
                 canvas.drawPath(
                     createPath(pw.points),
                     paint = Paint().apply {

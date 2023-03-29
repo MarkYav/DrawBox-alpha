@@ -25,8 +25,9 @@ fun DrawBoxCanvas(
     alpha: Float,
     onSizeChanged: (IntSize) -> Unit,
     onTap: (Offset) -> Unit,
-    onDragStart: (Offset) -> Unit = { },
+    onDragStart: (Offset) -> Unit,
     onDrag: (Offset) -> Unit,
+    onDragEnd: () -> Unit,
     modifier: Modifier,
 ) {
     val onDragMapper: (change: PointerInputChange, dragAmount: Offset) -> Unit = remember {
@@ -36,7 +37,7 @@ fun DrawBoxCanvas(
     Canvas(modifier = modifier
         .onSizeChanged(onSizeChanged)
         .pointerInput(Unit) { detectTapGestures(onTap = onTap) }
-        .pointerInput(Unit) { detectDragGestures(onDragStart = onDragStart, onDrag = onDragMapper) }
+        .pointerInput(Unit) { detectDragGestures(onDragStart = onDragStart, onDrag = onDragMapper, onDragEnd = onDragEnd, onDragCancel = onDragEnd) }
         .clipToBounds()
         .alpha(alpha)
     ) {

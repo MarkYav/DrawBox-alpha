@@ -24,11 +24,12 @@ fun DrawBox(
         )
         DrawBoxCanvas(
             path = path ?: emptyList(),
+            alpha = canvasAlpha,
             onSizeChanged = controller::connectToDrawBox,
             onTap = controller::insertNewPath,
             onDragStart = controller::insertNewPath,
             onDrag = controller::updateLatestPath,
-            alpha = canvasAlpha,
+            onDragEnd = controller::finalizePath,
             modifier = Modifier.fillMaxSize(),
         )
     }

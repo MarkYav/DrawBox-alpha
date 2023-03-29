@@ -10,10 +10,10 @@ This is the first multiplatform drawing library!
 - Reset option
 - Background with color/image
 - Custom opacity of drawing/background
+- Different subscriptions (dynamic update/after each drawing)
 - Easy Implementations
 
 **Next releases:**
-- Different subscriptions (dynamic update/after each drawing)
 - Optimizing rendering (convert drawn PATHes)
 
 **Planned:**

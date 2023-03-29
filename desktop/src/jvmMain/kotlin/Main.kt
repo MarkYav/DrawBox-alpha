@@ -14,12 +14,14 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import drawbox.common.box.DrawBox
 import drawbox.common.controller.DrawBoxBackground
+import drawbox.common.controller.DrawBoxSubscription
 import drawbox.common.controller.DrawController
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
         val controller = remember { DrawController() }
-        val bitmap by controller.getBitmapFlow(250).collectAsState(ImageBitmap(250, 250, ImageBitmapConfig.Argb8888))
+        val bitmap by controller.getBitmapFlow(250, DrawBoxSubscription.DynamicUpdate).collectAsState(ImageBitmap(250, 250, ImageBitmapConfig.Argb8888))
+        val bitmapFinishDrawingUpdate by controller.getBitmapFlow(250, DrawBoxSubscription.FinishDrawingUpdate).collectAsState(ImageBitmap(250, 250, ImageBitmapConfig.Argb8888))
 
         controller.background = DrawBoxBackground.ColourBackground(color = Color.Blue, alpha = 0.15f)
         controller.canvasOpacity = 0.5f
@@ -35,10 +37,17 @@ fun main() = application {
             )
             Column {
                 Text("Result:")
+                Spacer(modifier = Modifier.height(10.dp))
                 Image(
                     bitmap,
                     contentDescription = "drawn bitmap",
-                    modifier = Modifier.size(250.dp).border(width = 1.dp, color = Color.Red),
+                    modifier = Modifier.size(200.dp).border(width = 1.dp, color = Color.Red),
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Image(
+                    bitmapFinishDrawingUpdate,
+                    contentDescription = "drawn bitmap",
+                    modifier = Modifier.size(200.dp).border(width = 1.dp, color = Color.Red),
                 )
             }
         }
